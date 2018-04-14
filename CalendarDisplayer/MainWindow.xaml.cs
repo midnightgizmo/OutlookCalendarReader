@@ -20,9 +20,49 @@ namespace CalendarDisplayer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<Models.CalendarFile> _ListOfFiles;
+        private Models.CalendarItem _SelectedCalendarItem;
+
+        private Views.FilesListView viewFileList;
         public MainWindow()
         {
             InitializeComponent();
+
+            viewFileList = new Views.FilesListView();
+            viewFileList.FileSelected += delegate (Models.CalendarFile aFile)
+            {
+                Views.CalendarListView calendarList = new Views.CalendarListView();
+                calendarList.DataContext = Models.CalendarItem.DeserializeJsonString(aFile.FileContent);
+
+                CalendarResultsContainer.Children.Clear();
+                CalendarResultsContainer.Children.Add(calendarList);
+
+            };
+            
+
+            _ListOfFiles = Models.CalendarFile.FindAllFilesOnDisk();
+            viewFileList.DataContext = _ListOfFiles;
+
+            _SelectedCalendarItem = null;
         }
+
+
+
+        private void cmdShowFiles_Click(object sender, RoutedEventArgs e)
+        {
+            CalendarResultsContainer.Children.Clear();
+            CalendarResultsContainer.Children.Add(viewFileList);
+        }
+
+        private void cmdShowAsList_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void cmdShowAsCalendar_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }
